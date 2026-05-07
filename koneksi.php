@@ -1,7 +1,7 @@
 <?php
 $host = getenv('MYSQLHOST') ?: 'localhost';
 $user = getenv('MYSQLUSER') ?: 'root';
-$pass = getenv('MYSQLPASSWORD') ?: '';
+$pass = getenv('MYSQLPASSWORD') ?: 'php2-production-c514.up.railway.app';
 $db   = getenv('MYSQLDATABASE') ?: 'railway';
 $port = getenv('MYSQLPORT') ?: 3306;
 
