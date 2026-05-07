@@ -1,60 +1,54 @@
-<?php include 'koneksi.php'; ?>
+<?php
+include 'koneksi.php';
+header('Content-Type: application/json');
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PHP CRUD Railway</title>
-</head>
-<body>
-    <h2>Tambah Data</h2>
-    <form method="POST">
-        <input type="text" name="nama" placeholder="Nama" required>
-        <input type="sandi" name="sandi" placeholder="sandi" required>
-        <button type="submit" name="tambah">Simpan</button>
-    </form>
+$method = $_SERVER['REQUEST_METHOD'];
 
-    <?php
+switch($method) {
+    // ---- GET: Mengambil Data ----
+    case 'GET':
+        $sql = "SELECT * FROM users";
+        $result = mysqli_query($koneksi, $sql);
+        $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        echo json_encode($users);
+        break;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+    // ---- POST: Tambah Data ----
+    case 'POST':
+        $input = json_decode(file_get_contents('php://input'), true);
+        $nama = $input['nama'];
+        $sandi = $input['sandi'];
+        $sql = "INSERT INTO users (nama, sandi, aksi) VALUES ('$nama', '$sandi', 'Insert via API')";
+        
+        if(mysqli_query($koneksi, $sql)) {
+            echo json_encode(["message" => "Data berhasil ditambah"]);
+        } else {
+            echo json_encode(["message" => "Gagal: " . mysqli_error($koneksi)]);
+        }
+        break;
 
-    // Logika Create
-    if(isset($_POST['tambah'])){
-        $nama = $_POST['nama'];
-        $sandi = $_POST['sandi'];
-        mysqli_query($koneksi, "INSERT INTO users (nama, sandi) VALUES('$nama', '$sandi')");
-    }
+    // ---- PUT: Update Data ----
+    case 'PUT':
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'];
+        $nama = $input['nama'];
+        $sandi = $input['sandi'];
+        $sql = "UPDATE users SET nama='$nama', sandi='$sandi', aksi='Update via API' WHERE id=$id";
+        
+        if(mysqli_query($koneksi, $sql)) {
+            echo json_encode(["message" => "Data berhasil diupdate"]);
+        }
+        break;
 
-    // Logika Delete
-    if(isset($_GET['hapus'])){
-        $id = $_GET['hapus'];
-        mysqli_query($koneksi, "DELETE FROM users WHERE id=$id");
-        header("Location: index.php");
-    }
-    ?>
-
-    <h2>Data Users</h2>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Nama</th>
-            <th>sandi</th>
-            <th>Aksi</th>
-        </tr>
-        <?php
-        $data = mysqli_query($koneksi, "SELECT * FROM users");
-        while($d = mysqli_fetch_array($data)){
-        ?>
-        <tr>
-            <td><?php echo $d['id']; ?></td>
-            <td><?php echo $d['nama']; ?></td>
-            <td><?php echo $d['sandi']; ?></td>
-            <td>
-                <a href="index.php?hapus=<?php echo $d['id']; ?>">Hapus</a>
-            </td>
-        </tr>
-        <?php } ?>
-    </table>
-</body>
-</html>
+    // ---- DELETE: Hapus Data ----
+    case 'DELETE':
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'];
+        $sql = "DELETE FROM users WHERE id=$id";
+        
+        if(mysqli_query($koneksi, $sql)) {
+            echo json_encode(["message" => "Data berhasil dihapus"]);
+        }
+        break;
+}
+?>
