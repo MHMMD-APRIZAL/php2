@@ -1,2 +1,8 @@
 [phases.setup]
-nixPkgs = ["...", "php82Packages.extensions.mysqli"]
+nixPkgs = ["php82", "php82Packages.composer"]
+
+[phases.build]
+cmds = ["composer install"]
+
+[start]
+cmd = "php -S 0.0.0.0:$PORT index.php"
