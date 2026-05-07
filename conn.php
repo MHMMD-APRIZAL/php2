@@ -2,7 +2,7 @@
 // Mengambil data dari environment variables Railway
 $host = getenv('MYSQLHOST') ?: 'mysql.railway.internal';
 $user = getenv('MYSQLUSER') ?: 'root';
-$pass = getenv('MYSQLPASSWORD') ?: 'LZstNChgUtUIzpLIpzjVtJVusCMZscPX';
+$pass = getenv('MYSQLPASSWORD') ?: 'yyWVsDyQJbOgpLGUYxxqdJgbBeDDyicX';
 $db   = getenv('MYSQLDATABASE') ?: 'railway';
 $port = getenv('MYSQLPORT') ?: 3306;
 
